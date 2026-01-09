@@ -1,0 +1,11 @@
+{
+    "models": [
+      {
+        "title": "DeepSeek Coder 1.3B (Local)",
+        "model": "deepseek-coder:1.3b",
+        "apiBase": "http://localhost:11434",
+        "apiKey": "ollama",
+        "provider": "ollama"
+      }
+    ]
+  }

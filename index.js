@@ -2,7 +2,15 @@ import express from "express";
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+app.use(express.json())
+
+const PORT = process.env.PORT ?? 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+
+app.use(express.json());
 
 /* msje de bienvenida */
 app.get("/", (req, res) => {
@@ -10,53 +18,64 @@ app.get("/", (req, res) => {
 });
 
 
-/* puerto de escucha */
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
 
 
 
 
 /* endpoints de login, registro, logout, olvidé mi contraseña */
+
+
 /* login */
-app.post("/login", (req, res) => {  /* login con post */
+app.post("/login", (req, res) => { 
+     /* login con post */
     const { email, password } = req.body;
     res.send("login successful");
 });
 
+
+
+
+
+
+
 /* registro */
-app.post("/register", (req, res) => {  /* registro con post */      const { name, email, password } = req.body;
-    res.send("registration successful");
+app.post("/register", (req, res) => {
+     const { name, email, password } = req.body;
+     console.log(req.body);
+   
+     try {
+        const id = UserRepository.create({name, email, password});
+        res.send({id});
+    } catch (error) {
+        res.status(500).send("registro fallido papa");
+    }
 });
 
-/* logout */
-app.post("/logout", (req, res) => {  /* logout con post */
-    res.send("logout successful");
-});
 
 
-/* olvidé mi contraseña */
-app.post("/forgot-password", (req, res) => {  /* olvidé mi contraseña con post */
-    const { email } = req.body;
-    res.send("password reset successful");
-});
 
 /* cambiar contraseña */
-app.post("/change-password", (req, res) => {  /* cambiar contraseña con post */
+app.post("/change-password", (req, res) => { 
+     /* cambiar contraseña con post */
     const { email, password } = req.body;
     res.send("password changed successfully");
 });
 
 
-app.post("/reset-password", (req, res) => {   /* resetear contraseña con post */ 
+app.post("/reset-password", (req, res) => {  
+     /* resetear contraseña con post */ 
      const { email, password } = req.body;  res.send("password reset successful");
 });
 
 
 
 
-app.get("/protected", (req, res) => {   /* protected con get */
+
+
+
+/* protected */
+app.get("/protected", (req, res) => { 
+      /* protected con get */
     res.send("protected route");
 });
 
