@@ -1,6 +1,6 @@
 <div class="register-container">
   <div class="register-image">
-    <img src="/assets/images/1200.jpg" alt="AirTM" />
+    <img src="assets/images/1200.jpg" alt="AirTM" />
   </div>
   
   <div class="register-form">
@@ -136,8 +136,20 @@
       </button>
     </form>
 
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
+    <!-- Modal de error -->
+    <div *ngIf="showErrorModal" class="error-modal-overlay" (click)="closeErrorModal()">
+      <div class="error-modal" (click)="$event.stopPropagation()">
+        <div class="error-modal-header">
+          <h3>Error</h3>
+          <button class="error-modal-close" (click)="closeErrorModal()">&times;</button>
+        </div>
+        <div class="error-modal-body">
+          <p>{{ errorMessage }}</p>
+        </div>
+        <div class="error-modal-footer">
+          <button class="error-modal-btn" (click)="closeErrorModal()">Aceptar</button>
+        </div>
+      </div>
     </div>
 
     <div class="login-link">

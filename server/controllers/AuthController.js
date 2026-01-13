@@ -22,20 +22,25 @@ export class AuthController {
 
     static async register(req, res) {
         const { username, email, password } = req.body;
-        console.log(req.body);    
+        console.log('Datos recibidos en register:', req.body);
         
         try {
             const id = await UserService.create({ username, email, password });
-            res.json({
+            console.log('Usuario creado exitosamente con ID:', id);
+            res.status(200).json({
                 success: true,
                 id: id,
                 message: "registro exitoso"
             });
         } catch (error) {
             console.error("Error al registrar:", error);
-            res.status(500).json({
+            // Usar status 400 para errores de validación y 500 para errores del servidor
+            const statusCode = error.message.includes('already exists') || 
+                              error.message.includes('must be between') || 
+                              error.message.includes('Invalid') ? 400 : 500;
+            res.status(statusCode).json({
                 success: false,
-                message: error.message
+                message: error.message || 'Error al registrar usuario'
             });
         }
     }

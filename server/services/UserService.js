@@ -52,8 +52,8 @@ class Validation {
         if (typeof password !== "string") {
             throw new Error("Invalid password");
         }
-        if (password.length < 8) { // Mínimo 8 caracteres
-            throw new Error("Password must be at least 8 characters");
+        if (password.length < 6) { // Mínimo 6 caracteres
+            throw new Error("Password must be at least 6 characters");
         }
         // Requiere al menos una mayúscula, minúscula y número
         const hasUpperCase = /[A-Z]/.test(password);

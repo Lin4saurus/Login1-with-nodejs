@@ -11,11 +11,22 @@ const __dirname = path.dirname(__filename);
 export const createApp = () => {
     const app = express();
 
-    // Middleware
+    // Middleware de logging para debug
+    app.use((req, res, next) => {
+        console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+        console.log('Headers:', req.headers);
+        console.log('Body:', req.body);
+        next();
+    });
+
+    // Middleware CORS
     app.use(cors({
-        origin: ['http://localhost:4200'], // Angular frontend
-        credentials: true
+        origin: ['http://localhost:4200', 'http://127.0.0.1:4200'], // Angular frontend
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization']
     }));
+    
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
