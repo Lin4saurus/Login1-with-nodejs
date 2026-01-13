@@ -1,10 +1,11 @@
+// src/components/register/register.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { timeout, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { timeout } from 'rxjs/operators';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-register',
@@ -17,115 +18,119 @@ export class RegisterComponent {
   formData = { username: '', email: '', password: '' };
   confirmPassword = '';
   acceptTerms = false;
-  errorMessage = '';
   isLoading = false;
-  showErrorModal = false;
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   get isPasswordMatch(): boolean {
     return this.formData.password === this.confirmPassword;
   }
 
-  showErrorPopup(message: string) {
-    this.errorMessage = message;
-    this.showErrorModal = true;
-    // Auto-cerrar después de 5 segundos
-    setTimeout(() => {
-      this.closeErrorModal();
-    }, 5000);
-  }
-
-  closeErrorModal() {
-    this.showErrorModal = false;
-    this.errorMessage = '';
-  }
-
   onRegister() {
+    // Validación de contraseñas coincidentes
     if (!this.isPasswordMatch) {
-      this.showErrorPopup('Las contraseñas no coinciden');
+      this.notificationService.warning('Las contraseñas no coinciden');
       return;
     }
 
+    // Validación de términos y condiciones
     if (!this.acceptTerms) {
-      this.showErrorPopup('Debes aceptar los términos y condiciones');
+      this.notificationService.warning('Debes aceptar los términos y condiciones');
       return;
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
 
-    console.log('Enviando datos:', this.formData);
-
-    try {
-      this.http.post('http://localhost:3000/register', this.formData, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .pipe(
-        timeout(30000) // Timeout de 30 segundos
-      )
-      .subscribe({
-        next: (response: any) => {
-          console.log('Respuesta del servidor:', response);
-          this.isLoading = false;
-          if (response.success) {
-            alert('Registro exitoso! Por favor inicia sesión.');
+    this.http.post('http://localhost:3000/register', this.formData, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .pipe(
+      timeout(30000) // Timeout de 30 segundos
+    )
+    .subscribe({
+      next: (response: any) => {
+        this.isLoading = false;
+        if (response.success) {
+          this.notificationService.success('¡Registro exitoso! Redirigiendo al login...');
+          setTimeout(() => {
             this.router.navigate(['/login']);
-          } else {
-            this.showErrorPopup(response.message || 'Error al registrar');
-          }
-        },
-        error: (error) => {
-          console.error('Error completo:', error);
-          console.error('Error status:', error.status);
-          console.error('Error message:', error.message);
-          console.error('Error body:', error.error);
-          
-          // SIEMPRE resetear isLoading, sin importar el tipo de error
-          this.isLoading = false;
-          
-          let errorMsg = '';
-          if (error.name === 'TimeoutError' || error.error?.name === 'TimeoutError') {
-            errorMsg = 'La petición tardó demasiado. Por favor intenta nuevamente.';
-          } else if (error.error && error.error.message) {
-            errorMsg = error.error.message;
-          } else if (error.message) {
-            errorMsg = error.message;
-          } else if (error.status === 0 || !error.status) {
-            errorMsg = 'No se pudo conectar con el servidor. Verifica que el servidor esté corriendo en http://localhost:3000';
-          } else {
-            errorMsg = 'Error al registrar. Por favor intenta nuevamente.';
-          }
-          this.showErrorPopup(errorMsg);
-        },
-        complete: () => {
-          // Garantía adicional: siempre resetear isLoading cuando se complete (exitoso o con error)
-          this.isLoading = false;
+          }, 1500);
+        } else {
+          this.notificationService.error(response.message || 'Error al registrar');
         }
-      });
-    } catch (error) {
-      // Manejo de errores síncronos (no debería pasar, pero por si acaso)
-      console.error('Error síncrono:', error);
-      this.isLoading = false;
-      this.showErrorPopup('Error inesperado. Por favor intenta nuevamente.');
-    }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        
+        // Manejo de timeout
+        if (error.name === 'TimeoutError' || error.error?.name === 'TimeoutError') {
+          this.notificationService.error('La petición tardó demasiado. Por favor intenta nuevamente.');
+          return;
+        }
+
+        // Manejo de errores de conexión
+        if (error.status === 0 || !error.status) {
+          this.notificationService.error('No se pudo conectar con el servidor. Verifica que esté corriendo.');
+          return;
+        }
+
+        // Extraer mensaje de error del servidor
+        const errorMessage = error.error?.message || error.message || 'Error al registrar';
+        
+        // Mensajes específicos según el tipo de error del servidor
+        if (errorMessage.includes('Username already exists')) {
+          this.notificationService.error('El nombre de usuario ya existe');
+        } 
+        else if (errorMessage.includes('Email already exists')) {
+          this.notificationService.error('El email ya está registrado');
+        }
+        else if (errorMessage.includes('Username must be between')) {
+          this.notificationService.warning('El nombre de usuario debe tener entre 3 y 20 caracteres');
+        }
+        else if (errorMessage.includes('Username can only contain')) {
+          this.notificationService.warning('El usuario solo puede contener letras, números y guiones bajos');
+        }
+        else if (errorMessage.includes('Password must be at least')) {
+          this.notificationService.warning('La contraseña debe tener al menos 6 caracteres');
+        }
+        else if (errorMessage.includes('Password must contain')) {
+          this.notificationService.warning('La contraseña debe contener mayúsculas, minúsculas y números');
+        }
+        else if (errorMessage.includes('Password must be maximum')) {
+          this.notificationService.warning('La contraseña debe tener máximo 20 caracteres');
+        }
+        else if (errorMessage.includes('Invalid email format')) {
+          this.notificationService.error('Formato de email inválido');
+        }
+        else if (errorMessage.includes('Email must be between')) {
+          this.notificationService.warning('El email debe tener entre 3 y 50 caracteres');
+        }
+        else {
+          this.notificationService.error(errorMessage);
+        }
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
   }
 
   // Métodos para login social (simulados)
   registerWithGoogle() {
-    alert('Login con Google aún no implementado');
+    this.notificationService.info('Login con Google aún no implementado');
   }
 
   registerWithFacebook() {
-    alert('Login con Facebook aún no implementado');
+    this.notificationService.info('Login con Facebook aún no implementado');
   }
 
   registerWithApple() {
-    alert('Login con Apple aún no implementado');
+    this.notificationService.info('Login con Apple aún no implementado');
   }
 }

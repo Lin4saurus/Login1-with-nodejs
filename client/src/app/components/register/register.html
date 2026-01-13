@@ -8,13 +8,13 @@
 
     <!-- Botones de registro social -->
     <div class="social-register">
-      <button class="social-btn google">
+      <button class="social-btn google" type="button" (click)="registerWithGoogle()">
         <span>Google</span>
       </button>
-      <button class="social-btn facebook">
+      <button class="social-btn facebook" type="button" (click)="registerWithFacebook()">
         <span>Facebook</span>
       </button>
-      <button class="social-btn apple">
+      <button class="social-btn apple" type="button" (click)="registerWithApple()">
         <span>Apple</span>
       </button>
     </div>
@@ -103,7 +103,7 @@
           #confirmPasswordInput="ngModel"
           class="form-control"
         >
-        <div *ngIf="confirmPasswordInput.invalid && confirmPasswordInput.touched && formData.password !== confirmPassword" class="error">
+        <div *ngIf="confirmPasswordInput.touched && !isPasswordMatch" class="error">
           Las contraseñas no coinciden
         </div>
       </div>
@@ -135,22 +135,6 @@
         <span *ngIf="isLoading">Registrando...</span>
       </button>
     </form>
-
-    <!-- Modal de error -->
-    <div *ngIf="showErrorModal" class="error-modal-overlay" (click)="closeErrorModal()">
-      <div class="error-modal" (click)="$event.stopPropagation()">
-        <div class="error-modal-header">
-          <h3>Error</h3>
-          <button class="error-modal-close" (click)="closeErrorModal()">&times;</button>
-        </div>
-        <div class="error-modal-body">
-          <p>{{ errorMessage }}</p>
-        </div>
-        <div class="error-modal-footer">
-          <button class="error-modal-btn" (click)="closeErrorModal()">Aceptar</button>
-        </div>
-      </div>
-    </div>
 
     <div class="login-link">
       <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
