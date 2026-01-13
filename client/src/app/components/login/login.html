@@ -28,19 +28,19 @@
     <!-- Formulario de login -->
     <form (ngSubmit)="onLogin()" #loginForm="ngForm">
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="username">Usuario</label>
         <input 
-          type="email" 
-          id="email"
-          [(ngModel)]="credentials.email" 
-          name="email" 
-          placeholder="Ingresa tu correo"
+          type="text" 
+          id="username"
+          [(ngModel)]="credentials.username" 
+          name="username" 
+          placeholder="Ingresa tu usuario"
           required
-          #emailInput="ngModel"
+          #usernameInput="ngModel"
           class="form-control"
         >
-        <div *ngIf="emailInput.invalid && emailInput.touched" class="error">
-          Email es requerido
+        <div *ngIf="usernameInput.invalid && usernameInput.touched" class="error">
+          Usuario es requerido
         </div>
       </div>
 
