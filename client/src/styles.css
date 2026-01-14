@@ -1,1 +1,92 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.css */
+
+/* ========================================= */
+/* ESTILOS GLOBALES PARA TOAST NOTIFICATIONS */
+/* ========================================= */
+
+/* Estilos base para todos los snackbars personalizados */
+.custom-snackbar {
+    border-radius: 8px !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+  
+  /* Contenedor principal del snackbar */
+  .custom-snackbar .mdc-snackbar__surface {
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Notificación de éxito (verde) */
+  .snackbar-success .mdc-snackbar__surface {
+    background-color: #d4edda !important;
+    border-left: 4px solid #28a745 !important;
+  }
+  
+  .snackbar-success .mdc-snackbar__label {
+    color: #155724 !important;
+    font-weight: 500 !important;
+  }
+  
+  .snackbar-success .mat-mdc-snack-bar-action {
+    color: #155724 !important;
+    font-weight: bold !important;
+  }
+  
+  /* Notificación de error (rojo) */
+  .snackbar-error .mdc-snackbar__surface {
+    background-color: #f8d7da !important;
+    border-left: 4px solid #dc3545 !important;
+  }
+  
+  .snackbar-error .mdc-snackbar__label {
+    color: #721c24 !important;
+    font-weight: 500 !important;
+  }
+  
+  .snackbar-error .mat-mdc-snack-bar-action {
+    color: #721c24 !important;
+    font-weight: bold !important;
+  }
+  
+  /* Notificación de advertencia (amarillo) */
+  .snackbar-warning .mdc-snackbar__surface {
+    background-color: #fff3cd !important;
+    border-left: 4px solid #ffc107 !important;
+  }
+  
+  .snackbar-warning .mdc-snackbar__label {
+    color: #856404 !important;
+    font-weight: 500 !important;
+  }
+  
+  .snackbar-warning .mat-mdc-snack-bar-action {
+    color: #856404 !important;
+    font-weight: bold !important;
+  }
+  
+  /* Notificación de información (azul) */
+  .snackbar-info .mdc-snackbar__surface {
+    background-color: #d1ecf1 !important;
+    border-left: 4px solid #17a2b8 !important;
+  }
+  
+  .snackbar-info .mdc-snackbar__label {
+    color: #0c5460 !important;
+    font-weight: 500 !important;
+  }
+  
+  .snackbar-info .mat-mdc-snack-bar-action {
+    color: #0c5460 !important;
+    font-weight: bold !important;
+  }
+  
+  /* Ajustes generales */
+  .mat-mdc-snack-bar-container {
+    margin: 20px !important;
+  }
+  
+  .mdc-snackbar__label {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    padding: 14px 16px !important;
+  }
