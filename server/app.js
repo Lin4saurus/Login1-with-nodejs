@@ -4,9 +4,16 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from './routes/AuthRoutes.js';
+import cookieParser from "cookie-parser";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+
+export const {
+    SECRET_JWT_KEY = 'secret',
+  } = process.env;
+
 
 export const createApp = () => {
     const app = express();
@@ -29,6 +36,9 @@ export const createApp = () => {
     
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
+
+
+    app.use(cookieParser())
 
     // Rutas
     app.use('/', authRoutes);
