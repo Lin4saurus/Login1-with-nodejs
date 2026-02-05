@@ -41,7 +41,7 @@
           autocomplete="username"
         >
         <div *ngIf="usernameInput.invalid && usernameInput.touched" class="error">
-          Usuario o email es requerido
+          Usuario o el email es requerido
         </div>
       </div>
 
@@ -60,8 +60,8 @@
           autocomplete="current-password"
         >
         <div *ngIf="passwordInput.invalid && passwordInput.touched" class="error">
-          <span *ngIf="passwordInput.errors?.['required']">Contraseña es requerida</span>
-          <span *ngIf="passwordInput.errors?.['minlength']">Mínimo 6 caracteres</span>
+          <span *ngIf="passwordInput.errors?.['required']">La contraseña es requerida</span>
+          <span *ngIf="passwordInput.errors?.['minlength']">Por favor mínimo 6 caracteres</span>
         </div>
       </div>
 
@@ -93,7 +93,7 @@
     </div>
 
     <div class="register-link">
-      <p>¿Aún no tienes cuenta? <a routerLink="/register">Regístrate</a></p>
+      <p>¿Aún no tenes cuenta? <a routerLink="/register">Regístrate</a></p>
     </div>
   </div>
 </div>
