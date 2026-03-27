@@ -1,14 +1,39 @@
 // server/controllers/AuthController.js
+import { SECRET_JWT_KEY } from '../app.js';
 import { UserService } from '../services/UserService.js';
+import jwt from 'jsonwebtoken'
+import cookieParser from 'cookie-parser';
 
 export class AuthController {
     static async login(req, res) {
         const { username, email, password } = req.body;
         try {
             const user = await UserService.login({ username, email, password });
-            res.json({
+
+ // ✅ Generar token con jwt.sign
+            const token = jwt.sign(
+              { _id: user._id, username: user.username },
+               SECRET_JWT_KEY,
+                { expiresIn: '1h' });
+
+
+
+            res
+            .cookie("access_token", token, { 
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 3600000 // 1 hora en milisegundos
+            })
+
+
+            .json({
                 success: true,
-                user: user,
+                user: {
+                    _id: user._id,
+                    username: user.username,
+                    email: user.email
+                },
                 message: "Login exitoso"
             });
         } catch (error) {
